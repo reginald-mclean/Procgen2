@@ -161,6 +161,17 @@ class _ChaserEnv(_ProcGen2Env):
     _LIB_NAME = "Chaser"
 
 
+class _JumperEnv(_ProcGen2Env):
+    """
+    Jumper — find the exit gem across multi-room platforms; a compass shows the direction.
+
+    Observation space : Dict{ "screen": Box(0, 255, (12288,), uint8) }  (64×64×3 flat)
+    Action space      : Dict{ "action": MultiDiscrete([15]) }
+    """
+    _GAME_DIR = "jumper"
+    _LIB_NAME = "Jumper"
+
+
 # ---------------------------------------------------------------------------
 # Register all environments with Gymnasium
 # ---------------------------------------------------------------------------
@@ -192,5 +203,11 @@ gym.register(
 gym.register(
     id="procgen2/Chaser-v0",
     entry_point="procgen2:_ChaserEnv",
+    max_episode_steps=1000,
+)
+
+gym.register(
+    id="procgen2/Jumper-v0",
+    entry_point="procgen2:_JumperEnv",
     max_episode_steps=1000,
 )
