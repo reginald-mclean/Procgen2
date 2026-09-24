@@ -67,7 +67,7 @@ class _ProcGen2Env(gym.Env, EzPickle):
     additional serialisation logic.
     """
 
-    metadata = {"render_modes": ["rgb_array"], "render_fps": 15}
+    metadata = {"render_modes": ["rgb_array", "human"], "render_fps": 15}
 
     # Subclasses must define:
     #   _GAME_DIR  : str   e.g. "coinrun"

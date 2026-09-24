@@ -153,7 +153,7 @@ def _put_value_buffer(arr):
     return buffer
 
 class CEnv(Env):
-    metadata = {"render_modes": ["rgb_array"], "render_fps": 15}
+    metadata = {"render_modes": ["rgb_array", "human"], "render_fps": 15}
 
     def __init__(self, lib_file_path: str, render_mode: Optional[str] = None, options: Optional[Dict[str, Any]] = None):
         # Each CEnv instance needs its own isolated copy of the shared library.
@@ -219,6 +219,8 @@ class CEnv(Env):
                 c_options[i].value = CEnv_Value(CENV_VALUE_TYPE_TO_CTYPE[value_type](v))
 
                 i += 1
+
+        self.render_mode = render_mode
 
         ret = self.lib.cenv_make(bytes("" if render_mode == None else render_mode, "ascii"), c_options, c_int32(num_options))
 
@@ -431,15 +433,31 @@ class CEnv(Env):
         return (observation, info)
 
     def render(self) -> gym.core.RenderFrame:
+        if self.render_mode is None:
+            raise gym.error.Error(
+                "render() called with render_mode=None. "
+                "Pass render_mode='rgb_array' or render_mode='human' to the constructor."
+            )
+
         self.lib.cenv_render()
 
+        if self.render_mode == "human":
+            # Display is handled entirely by the C++ SDL window; return None
+            # per Gymnasium convention for human render mode.
+            return None
+
+        # rgb_array: extract the frame from the C-side render buffer
         value_type = self.c_render_data.value_type
-        value_buffer_size = self.c_render_data.value_buffer_height * self.c_render_data.value_buffer_width * self.c_render_data.value_buffer_channels
+        value_buffer_size = (self.c_render_data.value_buffer_height *
+                             self.c_render_data.value_buffer_width *
+                             self.c_render_data.value_buffer_channels)
         c_buffer_p = self.c_render_data.value_buffer.b
 
         arr = _make_nd_array(c_buffer_p, (value_buffer_size,), dtype=CENV_VALUE_TYPE_TO_NUMPY_DTYPE[value_type])
 
-        return arr.reshape(self.c_render_data.value_buffer_height, self.c_render_data.value_buffer_width, self.c_render_data.value_buffer_channels)
+        return arr.reshape(self.c_render_data.value_buffer_height,
+                           self.c_render_data.value_buffer_width,
+                           self.c_render_data.value_buffer_channels)
 
     def close(self):
         self.lib.cenv_close()

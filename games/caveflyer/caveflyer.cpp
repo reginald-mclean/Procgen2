@@ -18,6 +18,8 @@ cenv_step_data step_data;
 cenv_render_data render_data;
 
 static bool g_initialized = false;
+static bool g_human_mode  = false;
+static SDL_Window* sdl_window = nullptr;
 
 // Shared value between different datas (optional)
 cenv_key_value observation;
@@ -186,12 +188,19 @@ int32_t cenv_make(const char* render_mode, cenv_option* options, int32_t options
     SDL_SetLogPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     std::string render_mode_str(render_mode != nullptr ? render_mode : "");
-    if (render_mode_str != "human")
+    g_human_mode = (render_mode_str == "human");
+
+    if (!g_human_mode)
         SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "offscreen");
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    window_target = SDL_CreateSurface(window_width, window_height, SDL_GetPixelFormatForMasks(32, rmask, gmask, bmask, amask));
+    if (g_human_mode) {
+        sdl_window    = SDL_CreateWindow("CaveFlyer", window_width, window_height, 0);
+        window_target = SDL_GetWindowSurface(sdl_window);
+    } else {
+        window_target = SDL_CreateSurface(window_width, window_height, SDL_GetPixelFormatForMasks(32, rmask, gmask, bmask, amask));
+    }
     obs_target = SDL_CreateSurface(obs_width, obs_height, SDL_GetPixelFormatForMasks(32, rmask, gmask, bmask, amask));
 
     window_renderer = SDL_CreateSoftwareRenderer(window_target);
@@ -367,7 +376,14 @@ int32_t cenv_step(cenv_key_value* actions, int32_t actions_size) {
 int32_t cenv_render() {
     render_game(false);
 
-    // Grab pixels
+    if (g_human_mode) {
+        SDL_UpdateWindowSurface(sdl_window);
+        SDL_PumpEvents();
+        SDL_Delay(1000 / 15);
+        return 0;
+    }
+
+    // rgb_array: grab pixels for Python
     SDL_LockSurface(window_target);
 
     uint8_t* pixels = (uint8_t*)window_target->pixels;
@@ -395,16 +411,21 @@ void cenv_close() {
     manager_texture.clear();
 
     SDL_DestroyRenderer(window_renderer);
-    SDL_DestroyRenderer(obs_renderer);
-    window_renderer = nullptr;
-    obs_renderer    = nullptr;
+    window_renderer    = nullptr;
     gr.window_renderer = nullptr;
-    gr.obs_renderer    = nullptr;
-
-    SDL_DestroySurface(window_target);
-    SDL_DestroySurface(obs_target);
+    if (g_human_mode) {
+        SDL_DestroyWindow(sdl_window);  // window_target owned by window
+        sdl_window = nullptr;
+    } else {
+        SDL_DestroySurface(window_target);
+    }
     window_target = nullptr;
-    obs_target    = nullptr;
+
+    SDL_DestroyRenderer(obs_renderer);
+    obs_renderer    = nullptr;
+    gr.obs_renderer = nullptr;
+    SDL_DestroySurface(obs_target);
+    obs_target      = nullptr;
 
     SDL_Quit();
 
