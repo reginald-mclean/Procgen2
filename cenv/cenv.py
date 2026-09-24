@@ -153,7 +153,7 @@ def _put_value_buffer(arr):
     return buffer
 
 class CEnv(Env):
-    metadata = {"render_modes": ["human", "single_rgb_array"], "render_fps": 15}
+    metadata = {"render_modes": ["rgb_array"], "render_fps": 15}
 
     def __init__(self, lib_file_path: str, render_mode: Optional[str] = None, options: Optional[Dict[str, Any]] = None):
         # Each CEnv instance needs its own isolated copy of the shared library.

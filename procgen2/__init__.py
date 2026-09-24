@@ -67,7 +67,7 @@ class _ProcGen2Env(gym.Env, EzPickle):
     additional serialisation logic.
     """
 
-    metadata = {"render_modes": ["human", "single_rgb_array"], "render_fps": 15}
+    metadata = {"render_modes": ["rgb_array"], "render_fps": 15}
 
     # Subclasses must define:
     #   _GAME_DIR  : str   e.g. "coinrun"
@@ -139,6 +139,17 @@ class _BossFightEnv(_ProcGen2Env):
     _LIB_NAME = "BossFight"
 
 
+class _CaveFlyerEnv(_ProcGen2Env):
+    """
+    CaveFlyer — pilot a ship through a cave, shoot enemies, reach the exit.
+
+    Observation space : Dict{ "screen": Box(0, 255, (12288,), uint8) }  (64×64×3 flat)
+    Action space      : Dict{ "action": MultiDiscrete([15]) }
+    """
+    _GAME_DIR = "caveflyer"
+    _LIB_NAME = "CaveFlyer"
+
+
 # ---------------------------------------------------------------------------
 # Register all environments with Gymnasium
 # ---------------------------------------------------------------------------
@@ -158,5 +169,11 @@ gym.register(
 gym.register(
     id="procgen2/BossFight-v0",
     entry_point="procgen2:_BossFightEnv",
+    max_episode_steps=1000,
+)
+
+gym.register(
+    id="procgen2/CaveFlyer-v0",
+    entry_point="procgen2:_CaveFlyerEnv",
     max_episode_steps=1000,
 )
