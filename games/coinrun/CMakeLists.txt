@@ -14,7 +14,7 @@ endif()
 
 ############################################################################
 # Platform / architecture configuration (ARM64, universal binary, Linux ARM)
-include("${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/ProcGen2Platform.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/ProcGen2Platform.cmake" OPTIONAL)
 
 ############################################################################
 # SDL dependencies
