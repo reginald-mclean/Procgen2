@@ -25,7 +25,7 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/ProcGen2Platform.cmake" OPTIONA
 ############################################################################
 # SDL dependencies
 find_package(SDL3 REQUIRED)
-find_package(SDL3_image::SDL3_image REQUIRED)
+find_package(SDL3_image REQUIRED)
 
 ############################################################################
 

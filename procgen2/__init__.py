@@ -128,6 +128,17 @@ class _ClimberEnv(_ProcGen2Env):
     _LIB_NAME = "Climber"
 
 
+class _BossFightEnv(_ProcGen2Env):
+    """
+    BossFight — destroy the boss ship before it destroys you.
+
+    Observation space : Dict{ "screen": Box(0, 255, (12288,), uint8) }  (64×64×3 flat)
+    Action space      : Dict{ "action": MultiDiscrete([15]) }
+    """
+    _GAME_DIR = "bossfight"
+    _LIB_NAME = "BossFight"
+
+
 # ---------------------------------------------------------------------------
 # Register all environments with Gymnasium
 # ---------------------------------------------------------------------------
@@ -141,5 +152,11 @@ gym.register(
 gym.register(
     id="procgen2/Climber-v0",
     entry_point="procgen2:_ClimberEnv",
+    max_episode_steps=1000,
+)
+
+gym.register(
+    id="procgen2/BossFight-v0",
+    entry_point="procgen2:_BossFightEnv",
     max_episode_steps=1000,
 )
