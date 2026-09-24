@@ -45,11 +45,16 @@ exclude = ["games*", "assets*", "*.egg-info"]
 # ---------------------------------------------------------------------------
 # PREREQUISITES (install once, outside the venv):
 #
-#   macOS:
+#   macOS (Apple Silicon or Intel — auto-detected):
 #     brew install cmake sdl3 sdl3_image
 #
-#   Ubuntu/Debian:
-#     sudo apt install cmake libsdl3-dev libsdl3-image-dev
+#   Ubuntu 24.04 / Debian 13+ / Fedora 39+:
+#     sudo apt install cmake libsdl3-dev libsdl3-image-dev   # apt-based
+#     sudo dnf install cmake SDL3-devel SDL3_image-devel      # dnf-based
+#
+#   Older Linux (SDL3 not yet in repos — build from source):
+#     See cmake/ProcGen2Platform.cmake for notes, or
+#     https://github.com/libsdl-org/SDL / SDL_image release-3.x tags
 #
 # BUILD THE GAME LIBRARIES (run from the repo root):
 #
