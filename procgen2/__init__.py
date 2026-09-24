@@ -150,6 +150,17 @@ class _CaveFlyerEnv(_ProcGen2Env):
     _LIB_NAME = "CaveFlyer"
 
 
+class _ChaserEnv(_ProcGen2Env):
+    """
+    Chaser — collect all orbs before the enemies catch you.
+
+    Observation space : Dict{ "screen": Box(0, 255, (12288,), uint8) }  (64×64×3 flat)
+    Action space      : Dict{ "action": MultiDiscrete([15]) }
+    """
+    _GAME_DIR = "chaser"
+    _LIB_NAME = "Chaser"
+
+
 # ---------------------------------------------------------------------------
 # Register all environments with Gymnasium
 # ---------------------------------------------------------------------------
@@ -175,5 +186,11 @@ gym.register(
 gym.register(
     id="procgen2/CaveFlyer-v0",
     entry_point="procgen2:_CaveFlyerEnv",
+    max_episode_steps=1000,
+)
+
+gym.register(
+    id="procgen2/Chaser-v0",
+    entry_point="procgen2:_ChaserEnv",
     max_episode_steps=1000,
 )
