@@ -183,6 +183,20 @@ class _MazeEnv(_ProcGen2Env):
     _LIB_NAME = "Maze"
 
 
+class _StarPilotEnv(_ProcGen2Env):
+    """
+    StarPilot — side-scrolling space shooter; survive enemies and reach the finish line.
+
+    Actions 0-8  : 2-D thrust (left/right/up/down/diagonal/no-op)
+    Actions 9-10 : fire right / fire left (ship holds still)
+
+    Observation space : Dict{ "screen": Box(0, 255, (12288,), uint8) }  (64×64×3 flat)
+    Action space      : Dict{ "action": MultiDiscrete([15]) }
+    """
+    _GAME_DIR = "starpilot"
+    _LIB_NAME = "StarPilot"
+
+
 # ---------------------------------------------------------------------------
 # Register all environments with Gymnasium
 # ---------------------------------------------------------------------------
@@ -226,5 +240,11 @@ gym.register(
 gym.register(
     id="procgen2/Maze-v0",
     entry_point="procgen2:_MazeEnv",
+    max_episode_steps=1000,
+)
+
+gym.register(
+    id="procgen2/StarPilot-v0",
+    entry_point="procgen2:_StarPilotEnv",
     max_episode_steps=1000,
 )

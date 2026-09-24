@@ -10,6 +10,8 @@
 build/
 games/*/build/
 
+procgen/
+
 # CMake-generated files that sometimes land outside the build directory
 CMakeCache.txt
 CMakeFiles/
