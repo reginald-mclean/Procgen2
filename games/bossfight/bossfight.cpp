@@ -323,7 +323,10 @@ int32_t cenv_step(cenv_key_value* actions, int32_t actions_size) {
 
         sprite_render->update(dt);
 
-        step_data.reward.f = (!agent_alive) * -10.0f + (!boss_alive) * 10.0f;
+        step_data.reward.f = static_cast<float>(mob_ai->pending_reward)
+            + (!agent_alive) * -10.0f
+            + (!boss_alive) * 10.0f;
+        mob_ai->pending_reward = 0;
 
         step_data.terminated = !agent_alive || !boss_alive;
         step_data.truncated = false;
@@ -469,7 +472,7 @@ void reset() {
     Entity boss = c.create_entity();
 
     c.add_component(boss, Component_Transform{ .position = { 0.0f, 0.0f } });
-    c.add_component(boss, Component_Collision{ .bounds{ -0.6f, -0.4f, 1.2f, 0.8f } });
+    c.add_component(boss, Component_Collision{ .bounds{ -0.6f, -0.6f, 1.2f, 1.2f } });
     c.add_component(boss, Component_Dynamics{});
     c.add_component(boss, Component_Hazard{});
     c.add_component(boss, Component_Mob_AI{});
