@@ -45,6 +45,7 @@ GAMES = {
     "bossfight": ("procgen2/BossFight-v0", "shooter"),
     "caveflyer": ("procgen2/CaveFlyer-v0", "shooter"),
     "starpilot": ("procgen2/StarPilot-v0", "starpilot"),
+    "fruitbot":  ("procgen2/FruitBot-v0",  "fruitbot"),
 }
 
 SCHEME_HELP = {
@@ -52,6 +53,7 @@ SCHEME_HELP = {
     "grid":     "Arrow keys move one cell (diagonals ignored on Chaser)",
     "shooter":  "Space = fire",
     "starpilot": "Space = fire right    Z / Left-Shift = fire left",
+    "fruitbot": "Left/Right to steer (you always drift up)    Space = throw a key",
 }
 
 
@@ -170,7 +172,7 @@ def main():
 
         if scheme == "platform" and keys[pygame.K_SPACE]:
             dy = -1
-        elif scheme == "shooter" and keys[pygame.K_SPACE]:
+        elif scheme in ("shooter", "fruitbot") and keys[pygame.K_SPACE]:
             fire = 1
         elif scheme == "starpilot":
             if keys[pygame.K_SPACE]:

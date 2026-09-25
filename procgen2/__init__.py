@@ -183,6 +183,17 @@ class _MazeEnv(_ProcGen2Env):
     _LIB_NAME = "Maze"
 
 
+class _FruitBotEnv(_ProcGen2Env):
+    """
+    FruitBot — drift up a corridor, collect fruit, unlock doors, reach the presents.
+
+    Observation space : Dict{ "screen": Box(0, 255, (12288,), uint8) }  (64×64×3 flat)
+    Action space      : Dict{ "action": MultiDiscrete([15]) }
+    """
+    _GAME_DIR = "fruitbot"
+    _LIB_NAME = "FruitBot"
+
+
 # ---------------------------------------------------------------------------
 # Register all environments with Gymnasium
 # ---------------------------------------------------------------------------
@@ -226,5 +237,11 @@ gym.register(
 gym.register(
     id="procgen2/Maze-v0",
     entry_point="procgen2:_MazeEnv",
+    max_episode_steps=1000,
+)
+
+gym.register(
+    id="procgen2/FruitBot-v0",
+    entry_point="procgen2:_FruitBotEnv",
     max_episode_steps=1000,
 )
